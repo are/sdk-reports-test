@@ -17,11 +17,11 @@ export type Config = {
 
 export const makeConfig = (): Config => ({
     secrets: {
-        github: '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',
+        github: '',
     },
     paths: {
         sdkSpecifications: path.resolve(__dirname, '../specifications'),
-        featureFiles: path.resolve(__dirname, '../specifications', 'features')
+        featureFiles: path.resolve(__dirname, '../specifications', 'features'),
     },
     repositories: {
         java: {

@@ -1,0 +1,22 @@
+{
+    "scripts": {
+        "fetch:specifications": "rm -rf ./specifications && git clone --depth 1 git@github.com:pubnub/sdk-specifications.git ./specifications",
+        "build:manifest": "ts-node src/index.ts",
+        "script:build-manifest": "npm run fetch:specifications && npm run build:manifest"
+    },
+    "dependencies": {
+        "@cucumber/gherkin": "^21.0.0",
+        "@cucumber/messages": "^17.1.0",
+        "@octokit/rest": "^18.12.0",
+        "@xmldom/xmldom": "^0.8.0",
+        "adm-zip": "^0.5.9",
+        "simple-git": "^2.48.0"
+    },
+    "devDependencies": {
+        "@types/adm-zip": "^0.4.34",
+        "@types/node": "^16.9.1",
+        "prettier": "^2.2.1",
+        "ts-node": "^10.2.1",
+        "typescript": "^4.2.4"
+    }
+}

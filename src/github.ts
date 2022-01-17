@@ -3,17 +3,7 @@ import AdmZip from 'adm-zip'
 import { extname } from 'path'
 
 import { Config } from './config'
-import { Artifact, RepositoryConfig } from './manifest'
-
-function getEntryType(config: RepositoryConfig, entry: AdmZip.IZipEntry) {
-    if (entry.name === config.mainReportName) {
-        return 'main'
-    } else if (entry.name === config.betaReportName) {
-        return 'beta'
-    } else {
-        return 'unknown'
-    }
-}
+import { Artifact, getEntryType, RepositoryConfig } from './manifest'
 
 export class GithubService {
     private octo: Octokit
@@ -68,7 +58,7 @@ export class GithubService {
         const zip = new AdmZip(Buffer.from(artifactZipBuffer))
 
         for (const entry of zip.getEntries()) {
-            const entryType = getEntryType(repositoryConfig, entry)
+            const entryType = getEntryType(repositoryConfig, entry.name)
 
             if (entryType === 'unknown') {
                 continue

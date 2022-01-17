@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<testsuite errors="0" failures="0" name="io.cucumber.core.plugin.JUnitFormatter" skipped="0" tests="9" time="2.736">
+    <testcase classname="Grant an access token" name="Grant an access token with all permissions on all resource types with authorized uuid" time="1.683">
+        <system-out>
+            <![CDATA[Given I have a keyset with access manager enabled...........................passed
+Given the authorized UUID "test-authorized-uuid"............................passed
+Given the TTL 60............................................................passed
+Given the 'channel-1' CHANNEL resource access permissions...................passed
+* grant resource permission READ............................................passed
+* grant resource permission WRITE...........................................passed
+* grant resource permission GET.............................................passed
+* grant resource permission MANAGE..........................................passed
+* grant resource permission UPDATE..........................................passed
+* grant resource permission JOIN............................................passed
+* grant resource permission DELETE..........................................passed
+Given the 'channel_group-1' CHANNEL_GROUP resource access permissions.......passed
+* grant resource permission READ............................................passed
+* grant resource permission MANAGE..........................................passed
+Given the 'uuid-1' UUID resource access permissions.........................passed
+* grant resource permission GET.............................................passed
+* grant resource permission UPDATE..........................................passed
+* grant resource permission DELETE..........................................passed
+Given the '^channel-\S*$' CHANNEL pattern access permissions................passed
+* grant pattern permission READ.............................................passed
+* grant pattern permission WRITE............................................passed
+* grant pattern permission GET..............................................passed
+* grant pattern permission MANAGE...........................................passed
+* grant pattern permission UPDATE...........................................passed
+* grant pattern permission JOIN.............................................passed
+* grant pattern permission DELETE...........................................passed
+Given the '^:channel_group-\S*$' CHANNEL_GROUP pattern access permissions...passed
+* grant pattern permission READ.............................................passed
+* grant pattern permission MANAGE...........................................passed
+Given the '^uuid-\S*$' UUID pattern access permissions......................passed
+* grant pattern permission GET..............................................passed
+* grant pattern permission UPDATE...........................................passed
+* grant pattern permission DELETE...........................................passed
+When I grant a token specifying those permissions...........................passed
+Then the token contains the authorized UUID "test-authorized-uuid"..........passed
+Then the token contains the TTL 60..........................................passed
+Then the token has 'channel-1' CHANNEL resource access permissions..........passed
+* token resource permission READ............................................passed
+* token resource permission WRITE...........................................passed
+* token resource permission GET.............................................passed
+* token resource permission MANAGE..........................................passed
+* token resource permission UPDATE..........................................passed
+* token resource permission JOIN............................................passed
+* token resource permission DELETE..........................................passed
+Then the token has 'channel_group-1' CHANNEL_GROUP resource access permissions.passed
+* token resource permission READ............................................passed
+* token resource permission MANAGE..........................................passed
+Then the token has 'uuid-1' UUID resource access permissions................passed
+* token resource permission GET.............................................passed
+* token resource permission UPDATE..........................................passed
+* token resource permission DELETE..........................................passed
+Then the token has '^channel-\S*$' CHANNEL pattern access permissions.......passed
+* token pattern permission READ.............................................passed
+* token pattern permission WRITE............................................passed
+* token pattern permission GET..............................................passed
+* token pattern permission MANAGE...........................................passed
+* token pattern permission UPDATE...........................................passed
+* token pattern permission JOIN.............................................passed
+* token pattern permission DELETE...........................................passed
+Then the token has '^:channel_group-\S*$' CHANNEL_GROUP pattern access permissions.passed
+* token pattern permission READ.............................................passed
+* token pattern permission MANAGE...........................................passed
+Then the token has '^uuid-\S*$' UUID pattern access permissions.............passed
+* token pattern permission GET..............................................passed
+* token pattern permission UPDATE...........................................passed
+* token pattern permission DELETE...........................................passed
+]]>
+        </system-out>
+    </testcase>
+    <testcase classname="Grant an access token" name="Grant an access token without an authorized uuid" time="0.081">
+        <system-out>
+            <![CDATA[Given I have a keyset with access manager enabled...........................passed
+Given the TTL 60............................................................passed
+Given the 'channel-1' CHANNEL resource access permissions...................passed
+* grant resource permission READ............................................passed
+When I grant a token specifying those permissions...........................passed
+Then the token contains the TTL 60..........................................passed
+Then the token does not contain an authorized uuid..........................passed
+Then the token has 'channel-1' CHANNEL resource access permissions..........passed
+* token resource permission READ............................................passed
+]]>
+        </system-out>
+    </testcase>
+    <testcase classname="Grant an access token" name="Grant an access token successfully with an authorized uuid" time="0.061">
+        <system-out>
+            <![CDATA[Given I have a keyset with access manager enabled...........................passed
+Given the authorized UUID "test-authorized-uuid"............................passed
+Given the TTL 60............................................................passed
+Given the 'channel-1' CHANNEL resource access permissions...................passed
+* grant resource permission READ............................................passed
+When I grant a token specifying those permissions...........................passed
+Then the token contains the TTL 60..........................................passed
+Then the token contains the authorized UUID "test-authorized-uuid"..........passed
+Then the token has 'channel-1' CHANNEL resource access permissions..........passed
+* token resource permission READ............................................passed
+]]>
+        </system-out>
+    </testcase>
+    <testcase classname="Grant an access token" name="Attempt to grant an access token with all permissions empty or false and expect a server error" time="0.086">
+        <system-out>
+            <![CDATA[Given I have a keyset with access manager enabled...........................passed
+Given the TTL 60............................................................passed
+Given the 'uuid-1' UUID resource access permissions.........................passed
+* deny resource permission GET..............................................passed
+When I attempt to grant a token specifying those permissions................passed
+Then an error is returned...................................................passed
+* the error status code is 400..............................................passed
+* the error message is 'Invalid permissions'................................passed
+* the error source is 'grant'...............................................passed
+* the error detail message is 'Unexpected value: `permissions.resources.uuids.uuid-1` must be positive and non-zero.'.passed
+* the error detail location is 'permissions.resources.uuids.uuid-1'.........passed
+* the error detail location type is 'body'..................................passed
+]]>
+        </system-out>
+    </testcase>
+    <testcase classname="Grant an access token" name="Attempt to grant an access token with a regular expression containing a syntax error and expect a server error" time="0.097">
+        <system-out>
+            <![CDATA[Given I have a keyset with access manager enabled...........................passed
+Given the TTL 60............................................................passed
+Given the '!<[^>]+>++' UUID pattern access permissions......................passed
+* grant pattern permission GET..............................................passed
+When I attempt to grant a token specifying those permissions................passed
+Then an error is returned...................................................passed
+* the error status code is 400..............................................passed
+* the error message is 'Invalid RegExp'.....................................passed
+* the error source is 'grant'...............................................passed
+* the error detail message is 'Syntax error: multiple repeat.'..............passed
+* the error detail location is 'permissions.patterns.uuids.!<[^>]+>++'......passed
+* the error detail location type is 'body'..................................passed
+]]>
+        </system-out>
+    </testcase>
+    <testcase classname="Grant an access token" name="Attempt to grant an access token with a regular expression containing capturing groups and expect a server error" time="0.074">
+        <system-out>
+            <![CDATA[Given I have a keyset with access manager enabled...........................passed
+Given the TTL 60............................................................passed
+Given the '(!<[^>]+>)+' UUID pattern access permissions.....................passed
+* grant pattern permission GET..............................................passed
+When I attempt to grant a token specifying those permissions................passed
+Then an error is returned...................................................passed
+* the error status code is 400..............................................passed
+* the error message is 'Invalid RegExp'.....................................passed
+* the error source is 'grant'...............................................passed
+* the error detail message is 'Only non-capturing groups are allowed. Try replacing `(` with `(?:`.'.passed
+* the error detail location is 'permissions.patterns.uuids.(!<[^>]+>)+'.....passed
+* the error detail location type is 'body'..................................passed
+]]>
+        </system-out>
+    </testcase>
+    <testcase classname="Parse Access Token" name="Validate that a token containing authorized uuid can be parsed correctly" time="0.029">
+        <system-out>
+            <![CDATA[Given I have a keyset with access manager enabled...........................passed
+Given I have a known token containing an authorized UUID....................passed
+When I parse the token......................................................passed
+Then the parsed token output contains the authorized UUID "test-authorized-uuid".passed
+]]>
+        </system-out>
+    </testcase>
+    <testcase classname="Parse Access Token" name="Validate that a token containing uuid resource permissions can be parsed correctly" time="0.032">
+        <system-out>
+            <![CDATA[Given I have a keyset with access manager enabled...........................passed
+Given I have a known token containing UUID resource permissions.............passed
+When I parse the token......................................................passed
+Then the token has 'uuid-1' UUID resource access permissions................passed
+* token resource permission GET.............................................passed
+]]>
+        </system-out>
+    </testcase>
+    <testcase classname="Parse Access Token" name="Validate that a token containing uuid pattern permissions can be parsed correctly" time="0.024">
+        <system-out>
+            <![CDATA[Given I have a keyset with access manager enabled...........................passed
+Given I have a known token containing UUID pattern Permissions..............passed
+When I parse the token......................................................passed
+Then the token has '^uuid-\S*$' UUID pattern access permissions.............passed
+* token pattern permission GET..............................................passed
+]]>
+        </system-out>
+    </testcase>
+</testsuite>

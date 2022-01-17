@@ -1,9 +1,13 @@
-import { Artifact, Metadata, SupportedRepositories } from '../manifest'
+import { Artifact, getEntryType, isSupported, Metadata, SupportedRepositories } from '../manifest'
 import { VNode } from './vnode'
 
 import { xmlParser } from './parsers/xml'
 import { xmlJavaAdapter } from './adapters/java'
 import { xmlDartAdapter } from './adapters/dart'
+import { readdir, readFile } from 'fs/promises'
+import { listDirectories, listFiles } from '../utils'
+import { Config } from '../config'
+import { basename, resolve } from 'path'
 
 type Formats = Record<
     string,
@@ -46,4 +50,34 @@ function processArtifact(artifact: Artifact, metadata: Metadata) {
 
 export function processArtifacts(artifacts: Array<Artifact>, metadata: Metadata) {
     return artifacts.map((artifact) => processArtifact(artifact, metadata))
+}
+
+export async function getLocalArtifacts(path: string, config: Config): Promise<Array<Artifact>> {
+    const artifacts: Array<Artifact> = []
+
+    for await (const dir of listDirectories(path)) {
+        if (!isSupported(dir)) {
+            continue
+        }
+
+        const repoConfig = config.repositories[dir]
+
+        for await (const file of listFiles(resolve(path, dir), 'xml')) {
+            const entryType = getEntryType(repoConfig, basename(file))
+
+            if (entryType === 'unknown') {
+                continue
+            }
+
+            artifacts.push({
+                type: entryType,
+                extension: 'xml',
+                contents: await readFile(file, 'utf-8'),
+                createdAt: null,
+                language: dir,
+            })
+        }
+    }
+
+    return artifacts
 }

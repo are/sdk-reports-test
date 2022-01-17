@@ -1,5 +1,23 @@
 export type SupportedRepositories = 'java' | 'dart'
 
+export function isSupported(repo: string): repo is SupportedRepositories {
+    if (repo === 'java' || repo === 'dart') {
+        return true
+    }
+
+    return false
+}
+
+export function getEntryType(config: RepositoryConfig, name: string) {
+    if (name === config.mainReportName) {
+        return 'main'
+    } else if (name === config.betaReportName) {
+        return 'beta'
+    } else {
+        return 'unknown'
+    }
+}
+
 export type RepositoryConfig = {
     name: SupportedRepositories
 

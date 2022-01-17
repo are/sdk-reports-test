@@ -6,6 +6,10 @@ export const saveJson = async function (name: string, obj: any) {
     await fs.writeFile(`./${name}.json`, JSON.stringify(obj))
 }
 
+export const loadJson = async function (name: string) {
+    return JSON.parse(await fs.readFile(`./${name}.json`, 'utf-8'))
+}
+
 export const md5hash = function (text: string) {
     const md5 = crypto.createHash('md5')
 
@@ -18,6 +22,16 @@ export const getRelativePath = function (root: string, fullPath: string) {
 
 export const readFile = async function (path: string) {
     return fs.readFile(path, 'utf-8')
+}
+
+export const listDirectories = async function* (directory: string): AsyncGenerator<string, void, undefined> {
+    const contents = await fs.readdir(directory, { withFileTypes: true })
+
+    for (const entry of contents) {
+        if (entry.isDirectory()) {
+            yield entry.name
+        }
+    }
 }
 
 export const listFiles = async function* (

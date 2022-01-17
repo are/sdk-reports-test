@@ -1,8 +1,8 @@
 import { makeConfig } from './config'
 import { makeMetadata } from './gherkin'
 import { GithubService } from './github'
-import { processArtifacts } from './reports'
-import { saveJson } from './utils'
+import { getLocalArtifacts, processArtifacts } from './reports'
+import { loadJson, saveJson } from './utils'
 import { makeRepository } from './git'
 
 async function main() {
@@ -11,17 +11,24 @@ async function main() {
     const sdkSpecifications = makeRepository(config.paths.sdkSpecifications)
     const sdkReports = makeRepository('.')
 
-    const githubService = new GithubService(config)
-    
-    console.log(await sdkSpecifications.latestCommitDate())
-    console.log(await sdkReports.latestCommitDate())
+    const latestSdkSpecificationsUpdate = new Date((await sdkSpecifications.latestCommitDate()) ?? 0)
+    const latestSdkReportsMetadataUpdate = new Date((await sdkReports.latestCommitDateForFile('metadata.json')) ?? 0)
 
-    const metadata = await makeMetadata(config.paths.featureFiles)
-    const artifacts = await githubService.fetchArtifacts()
+    if (latestSdkReportsMetadataUpdate.getTime() < latestSdkSpecificationsUpdate.getTime()) {
+        const metadata = await makeMetadata(config.paths.featureFiles)
+
+        await saveJson('metadata', metadata)
+    }
+
+    const metadata = await loadJson('metadata')
+
+    const artifacts = await getLocalArtifacts('./reports', config)
+
+    // const githubService = new GithubService(config)
+    // const artifacts = await githubService.fetchArtifacts()
 
     const reports = processArtifacts(artifacts, metadata)
 
-    await saveJson('metadata', metadata)
     await saveJson('manifest', reports)
 }
 

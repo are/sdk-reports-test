@@ -1,12 +1,12 @@
-import { Artifact, getEntryType, isSupported, Metadata, SupportedRepositories } from '../manifest'
+import { Metadata } from '../manifest'
 import { VNode } from './vnode'
 
 import { xmlParser } from './parsers/xml'
 import { xmlJavaAdapter } from './adapters/java'
 import { xmlDartAdapter } from './adapters/dart'
-import { readdir, readFile } from 'fs/promises'
+import { readFile } from 'fs/promises'
 import { listDirectories, listFiles } from '../utils'
-import { Config } from '../config'
+import { Config, Artifact, getEntryType, isSupported, SupportedRepositories } from '../config'
 import { basename, resolve } from 'path'
 
 type Formats = Record<
@@ -14,7 +14,7 @@ type Formats = Record<
     {
         parser: (source: string) => VNode
         adapters: {
-            [L in SupportedRepositories]: (document: VNode, metadata: Metadata) => any
+            [L in SupportedRepositories]?: (document: VNode, metadata: Metadata) => any
         }
     }
 >
@@ -23,7 +23,9 @@ const formats: Formats = {
     xml: {
         parser: xmlParser,
         adapters: {
+            // 3. Then add an adapter
             java: xmlJavaAdapter,
+            kotlin: xmlJavaAdapter,
             dart: xmlDartAdapter,
         },
     },
@@ -39,6 +41,10 @@ function processArtifact(artifact: Artifact, metadata: Metadata) {
     const document = format.parser(artifact.contents)
 
     const adapter = format.adapters[artifact.language]
+
+    if (!adapter) {
+        throw new Error(`There is no available adapter for language '${artifact.language}'`)
+    }
 
     const result = adapter(document, metadata)
 

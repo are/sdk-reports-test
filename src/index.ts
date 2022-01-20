@@ -14,7 +14,11 @@ async function main() {
     const latestSdkSpecificationsUpdate = new Date((await sdkSpecifications.latestCommitDate()) ?? 0)
     const latestSdkReportsMetadataUpdate = new Date((await sdkReports.latestCommitDateForFile('metadata.json')) ?? 0)
 
-    if (latestSdkReportsMetadataUpdate.getTime() < latestSdkSpecificationsUpdate.getTime()) {
+    if (
+        process.argv.includes('--force-metadata') ||
+        latestSdkReportsMetadataUpdate.getTime() < latestSdkSpecificationsUpdate.getTime()
+    ) {
+        console.log('Rebuilding metadata.')
         const metadata = await makeMetadata(config.paths.featureFiles)
 
         await saveJson('metadata', metadata)

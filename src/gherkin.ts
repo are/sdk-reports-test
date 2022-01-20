@@ -35,6 +35,7 @@ function makeFeatureMetadata(feature: Messages.Feature, relativeFilePath: string
         description: normalizeDescription(feature.description),
         tags: normalizeTags(feature.tags),
         location: normalizeLocation(feature.location, relativeFilePath),
+        scenarios: [],
     }
 }
 
@@ -62,6 +63,7 @@ function makeScenarioMetadata(
         description: normalizeDescription(scenario.description),
         tags: normalizeTags(scenario.tags),
         location: normalizeLocation(scenario.location, relativeFilePath),
+        steps: [],
     }
 }
 
@@ -99,7 +101,6 @@ async function* generateMetadataEntries(path: string): AsyncGenerator<EntryMetad
 
         const featureMetadata = makeFeatureMetadata(feature, relativeFilePath)
 
-        yield featureMetadata
         let backgroundMetadata
 
         for (const child of feature.children) {
@@ -117,13 +118,21 @@ async function* generateMetadataEntries(path: string): AsyncGenerator<EntryMetad
                     relativeFilePath,
                 )
 
-                yield scenarioMetadata
+                featureMetadata.scenarios.push(scenarioMetadata.id)
 
                 for (const step of child.scenario.steps) {
-                    yield makeStepMetadata(step, scenarioMetadata, relativeFilePath)
+                    const stepMetadata = makeStepMetadata(step, scenarioMetadata, relativeFilePath)
+
+                    scenarioMetadata.steps.push(stepMetadata.id)
+
+                    yield stepMetadata
                 }
+
+                yield scenarioMetadata
             }
         }
+
+        yield featureMetadata
     }
 }
 

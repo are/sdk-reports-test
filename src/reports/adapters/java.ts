@@ -1,9 +1,9 @@
-import { Metadata } from '../../manifest'
+import { Metadata, ReportEntry, ReportStatus } from '../../manifest'
 import { findFeature, findScenario } from '../helpers'
 import { VNode } from '../vnode'
 
-export const xmlJavaAdapter = (document: VNode, metadata: Metadata): any => {
-    function* scenarioReportGenerator(document: VNode): Generator<any> {
+export const xmlJavaAdapter = (document: VNode, metadata: Metadata): Array<ReportEntry> => {
+    function* scenarioReportGenerator(document: VNode): Generator<ReportEntry> {
         for (const scenario of document.children) {
             const errors = scenario.children
                 .filter((child) => child.type === 'failure')
@@ -21,7 +21,7 @@ export const xmlJavaAdapter = (document: VNode, metadata: Metadata): any => {
 
             const tags = [...(featureMetadata?.tags ?? []), ...(scenarioMetadata?.tags ?? [])]
 
-            let status
+            let status: ReportStatus
 
             if (errors.length > 0) {
                 if (tags.includes('@beta')) {

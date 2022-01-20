@@ -2,8 +2,8 @@ import { Octokit } from '@octokit/rest'
 import AdmZip from 'adm-zip'
 import { extname } from 'path'
 
-import { Config } from './config'
-import { Artifact, getEntryType, RepositoryConfig } from './manifest'
+import { Config, getEntryType, RepositoryConfig } from './config'
+import { Artifact } from './manifest'
 
 export class GithubService {
     private octo: Octokit

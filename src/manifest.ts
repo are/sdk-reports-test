@@ -1,3 +1,14 @@
+import { SupportedRepositories } from './config'
+
+export type Artifact = {
+    type: 'beta' | 'main'
+    extension: string
+    language: SupportedRepositories
+    createdAt: string | null
+
+    contents: string
+}
+
 export type Location = {
     path: string
     line: number
@@ -11,6 +22,7 @@ export type FeatureMetadata = {
     description: string
     tags: Array<string>
     location: Location
+    scenarios: Array<string>
 }
 
 export type BackgroundMetadata = {
@@ -29,6 +41,7 @@ export type ScenarioMetadata = {
     description: string
     tags: Array<string>
     location: Location
+    steps: Array<string>
 }
 
 export type StepMetadata = {
@@ -51,4 +64,18 @@ export type Metadata = {
 
 export type ReportStatus = 'broken' | 'skipped' | 'na' | 'passed' | 'failed' | 'unknown'
 
-export type Manifest = {}
+export type ReportEntry = {
+    status: ReportStatus
+    feature?: string
+    scenario: string
+    duration?: number
+    stderr?: string
+    stdout?: string
+}
+
+export type Report = {
+    artifact: Artifact
+    scenarios: Array<ReportEntry>
+}
+
+export type Manifest = Array<Report>

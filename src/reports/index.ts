@@ -1,4 +1,4 @@
-import { Metadata } from '../manifest'
+import { Artifact, Metadata } from '../manifest'
 import { VNode } from './vnode'
 
 import { xmlParser } from './parsers/xml'
@@ -6,7 +6,7 @@ import { xmlJavaAdapter } from './adapters/java'
 import { xmlDartAdapter } from './adapters/dart'
 import { readFile } from 'fs/promises'
 import { listDirectories, listFiles } from '../utils'
-import { Config, Artifact, getEntryType, isSupported, SupportedRepositories } from '../config'
+import { Config, getEntryType, isSupported, SupportedRepositories } from '../config'
 import { basename, resolve } from 'path'
 
 type Formats = Record<

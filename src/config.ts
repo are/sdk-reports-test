@@ -13,15 +13,6 @@ export type RepositoryConfig = {
     betaReportName?: string
 }
 
-export type Artifact = {
-    type: 'beta' | 'main'
-    extension: string
-    language: SupportedRepositories
-    createdAt: string | null
-
-    contents: string
-}
-
 export type Config = {
     secrets: {
         github: string
